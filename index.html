@@ -94,8 +94,11 @@
     if(f.elements["_honey"].value){ return; }
     btn.disabled = true; msg.className = "msg"; msg.textContent = "جاري الإرسال...";
 
+    var ctrl = new AbortController();
+    var timer = setTimeout(function(){ ctrl.abort(); }, 15000);
     fetch("https://formsubmit.co/ajax/" + OWNER, {
       method: "POST",
+      signal: ctrl.signal,
       headers: {"Content-Type":"application/json","Accept":"application/json"},
       body: JSON.stringify({
         email: email,
@@ -109,15 +112,18 @@
     .then(function(d){
       if(d.success === "true" || d.success === true){
         msg.className = "msg ok";
-        msg.textContent = "تم! وصلني إيميلك وهيوصلك إيميل تأكيد، وبعدها هبعتلك لينك اللعبة في رد على إيميلك.";
+        msg.textContent = "تم! هيوصلك إيميل تأكيد، وبعدها هبعتلك لينك اللعبة في رد على إيميلك.";
         f.reset();
-      } else { throw new Error(d.message || "failed"); }
+      } else { throw new Error(d.message || "رفض الخادم الطلب"); }
     })
-    .catch(function(){
+    .catch(function(err){
       msg.className = "msg err";
-      msg.textContent = "حصلت مشكلة في الإرسال. جرّب تاني بعد شوية.";
+      var mail = "mailto:" + OWNER + "?subject=" + encodeURIComponent("مجرّب جديد للعبة Project Playtime") +
+                 "&body=" + encodeURIComponent("إيميلي على جوجل: " + email);
+      msg.innerHTML = "الإرسال التلقائي مش شغال دلوقتي (" + String(err.message || err).replace(/[<>&]/g,"") + ").<br>" +
+                      '<a href="' + mail + '" style="color:#ffc93c">اضغط هنا وابعت إيميلك عن طريق تطبيق الإيميل</a>';
     })
-    .finally(function(){ btn.disabled = false; });
+    .finally(function(){ clearTimeout(timer); btn.disabled = false; });
   });
 </script>
 </body>
