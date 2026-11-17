@@ -19,13 +19,15 @@
     min-height:100vh; display:flex; justify-content:center; padding:24px 16px 48px;
   }
   main{width:100%; max-width:520px}
-  .cover{
-    border-radius:20px; overflow:hidden; border:3px solid var(--yellow);
-    background:linear-gradient(135deg,#3b1d7a,#ff4f9a); aspect-ratio:16/10;
-    position:relative; box-shadow:8px 8px 0 var(--pink);
+  .banner{
+    border-radius:20px; border:3px solid var(--yellow); background:var(--card);
+    padding:22px 18px; text-align:center; box-shadow:8px 8px 0 var(--pink);
   }
-  .cover img{width:100%; height:100%; object-fit:cover; display:block}
-  .cover .ph{position:absolute; inset:0; display:grid; place-items:center; text-align:center; padding:16px; font-weight:600}
+  .banner b{display:block; font-size:3.4rem; line-height:1; color:var(--yellow); font-weight:800}
+  .banner span{display:block; margin:6px 0 14px; font-weight:600}
+  .dots{display:flex; flex-wrap:wrap; justify-content:center; gap:8px}
+  .dots i{width:22px; height:22px; border-radius:6px; background:var(--pink); display:block; transform:rotate(-6deg)}
+  .dots i:nth-child(even){background:var(--yellow); transform:rotate(5deg)}
   h1{font-size:2rem; font-weight:800; margin:28px 0 4px; line-height:1.3}
   .sub{color:var(--yellow); font-weight:600; margin:0 0 16px}
   p{margin:0 0 12px; color:var(--muted); font-size:1.02rem}
@@ -54,10 +56,10 @@
 <body>
 <main>
 
-  <!-- ضع صورة اللعبة في نفس مجلد الملف باسم game.jpg -->
-  <div class="cover">
-    <img src="game.jpg" alt="صورة لعبة Project Playtime Mobile" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'">
-    <div class="ph" style="display:none">ضع صورة اللعبة هنا<br>(game.jpg)</div>
+  <div class="banner">
+    <b>12</b>
+    <span>مجرّب مطلوبين لتجربة اللعبة</span>
+    <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
   </div>
 
   <h1>Project Playtime Mobile</h1>
@@ -99,14 +101,15 @@
         email: email,
         _subject: "مجرّب جديد للعبة Project Playtime: " + email,
         _template: "table",
-        _captcha: "false"
+        _captcha: "false",
+        _autoresponse: "وصلني إيميلك وشكراً إنك هتساعدني في تجربة Project Playtime Mobile. هضيفك في قائمة المجرّبين وأبعتلك لينك اللعبة في رد على الإيميل ده خلال يوم أو اتنين."
       })
     })
     .then(function(r){ return r.json(); })
     .then(function(d){
       if(d.success === "true" || d.success === true){
         msg.className = "msg ok";
-        msg.textContent = "تم! وصلني إيميلك وهضيفك وأبعتلك اللينك قريب.";
+        msg.textContent = "تم! وصلني إيميلك وهيوصلك إيميل تأكيد، وبعدها هبعتلك لينك اللعبة في رد على إيميلك.";
         f.reset();
       } else { throw new Error(d.message || "failed"); }
     })
